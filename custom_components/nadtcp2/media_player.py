@@ -1,6 +1,7 @@
 """Support for NAD digital amplifiers which can be remote controlled via tcp/ip."""
 import logging
 
+
 import voluptuous as vol
 
 import homeassistant.helpers.config_validation as cv
@@ -24,7 +25,7 @@ SIGNAL_NAD_STATE_RECEIVED = 'nad_state_received'
 DEFAULT_RECONNECT_INTERVAL = 10
 DEFAULT_NAME = 'NAD amplifier'
 DEFAULT_MIN_VOLUME = -80
-DEFAULT_MAX_VOLUME = -10
+DEFAULT_MAX_VOLUME = 10
 DEFAULT_VOLUME_STEP = 4
 
 SUPPORT_NAD = (
@@ -189,7 +190,7 @@ class NADEntity(MediaPlayerEntity):
         await self._client.select_source(source)
 
     async def async_added_to_hass(self):
-        from nadtcp import NADReceiverTCPC338, \
+        from .nadtcpv10 import NADReceiverTCPC338, \
             CMD_POWER, CMD_VOLUME, CMD_MUTE, CMD_SOURCE
 
         def state_changed_cb(state):
@@ -227,3 +228,4 @@ class NADEntity(MediaPlayerEntity):
             await connect(None)
         else:
             self.hass.bus.async_listen_once(EVENT_HOMEASSISTANT_START, connect)
+
