@@ -1,4 +1,4 @@
-**UNMAINTAINED: I've sold my NAD amplifier, so I cannot continue maintaining it. Feel free to fork**
+As of januari 2023, this version is working for my NAD C338 amplifier.
 
 # nadtcp
 
