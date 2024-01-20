@@ -1,3 +1,9 @@
+# This is martonperei's nadtcp library:
+# https://github.com/martonperei/nadtcp
+#
+# I only could get it to work by integrating it in the Home Assistant integration
+#
+
 import asyncio
 import socket
 import logging
@@ -22,66 +28,31 @@ MSG_OFF = 'Off'
 
 C338_CMDS = {
     'Main':
-        {'supported_operators': ['?']
-         },
+        {'supported_operators': ['?'] },
     'Main.AnalogGain':
-        {'supported_operators': ['+', '-', '=', '?'],
-         'values': range(0, 0),
-         'type': int
-         },
+        {'supported_operators': ['+', '-', '=', '?'], 'values': range(0, 0), 'type': int },
     'Main.Brightness':
-        {'supported_operators': ['+', '-', '=', '?'],
-         'values': range(0, 4),
-         'type': int
-         },
+        {'supported_operators': ['+', '-', '=', '?'], 'values': range(0, 4), 'type': int },
     'Main.Mute':
-        {'supported_operators': ['+', '-', '=', '?'],
-         'values': [MSG_OFF, MSG_ON],
-         'type': bool
-         },
+        {'supported_operators': ['+', '-', '=', '?'], 'values': [MSG_OFF, MSG_ON], 'type': bool },
     'Main.Power':
-        {'supported_operators': ['+', '-', '=', '?'],
-         'values': [MSG_OFF, MSG_ON],
-         'type': bool
-         },
+        {'supported_operators': ['+', '-', '=', '?'], 'values': [MSG_OFF, MSG_ON], 'type': bool },
     'Main.Volume':
-        {'supported_operators': ['+', '-', '=', '?'],
-         'values': range(-80, 0),
-         'type': float
-         },
+        {'supported_operators': ['+', '-', '=', '?'], 'values': range(-80, 0), 'type': float },
     'Main.Bass':
-        {'supported_operators': ['+', '-', '=', '?'],
-         'values': [MSG_OFF, MSG_ON],
-         'type': bool
-         },
+        {'supported_operators': ['+', '-', '=', '?'], 'values': [MSG_OFF, MSG_ON], 'type': bool },
     'Main.ControlStandby':
-        {'supported_operators': ['+', '-', '=', '?'],
-         'values': [MSG_OFF, MSG_ON],
-         'type': bool
-         },
+        {'supported_operators': ['+', '-', '=', '?'], 'values': [MSG_OFF, MSG_ON], 'type': bool },
     'Main.AutoStandby':
-        {'supported_operators': ['+', '-', '=', '?'],
-         'values': [MSG_OFF, MSG_ON],
-         'type': bool
-         },
+        {'supported_operators': ['+', '-', '=', '?'], 'values': [MSG_OFF, MSG_ON], 'type': bool },
     'Main.AutoSense':
-        {'supported_operators': ['+', '-', '=', '?'],
-         'values': [MSG_OFF, MSG_ON],
-         'type': bool
-         },
+        {'supported_operators': ['+', '-', '=', '?'], 'values': [MSG_OFF, MSG_ON], 'type': bool },
     'Main.Source':
-        {'supported_operators': ['+', '-', '=', '?'],
-         'values': ["Stream", "Wireless", "TV", "Phono", "Coax1", "Coax2",
-                    "Opt1", "Opt2"]
-         },
+        {'supported_operators': ['+', '-', '=', '?'], 'values': ["Stream", "Wireless", "TV", "Phono", "Coax1", "Coax2", "Opt1", "Opt2"] },
     'Main.Version':
-        {'supported_operators': ['?'],
-         'type': float
-         },
+        {'supported_operators': ['?'], 'type': float },
     'Main.Model':
-        {'supported_operators': ['?'],
-         'values': ['NADC338']
-         }
+        {'supported_operators': ['?'], 'values': ['NADC338'] }
 }
 
 
@@ -90,8 +61,7 @@ class NADReceiverTCPC338(asyncio.Protocol):
 
     CMD_MIN_INTERVAL = 0.15
 
-    def __init__(self, host, loop, state_changed_cb=None,
-                 reconnect_interval=15, connect_timeout=10):
+    def __init__(self, host, loop, state_changed_cb=None, reconnect_interval=15, connect_timeout=10):
         self._loop = loop
         self._host = host
         self._state_changed_cb = state_changed_cb
@@ -110,13 +80,13 @@ class NADReceiverTCPC338(asyncio.Protocol):
         cmd_desc = C338_CMDS[command]
         # validate operator
         if operator in cmd_desc['supported_operators']:
-            if operator is '=' and value is None:
+            if operator == '=' and value == None:
                 raise ValueError("No value provided")
-            elif operator in ['?', '-', '+'] and value is not None:
+            elif operator in ['?', '-', '+'] and value != None:
                 raise ValueError(
                     "Operator \'%s\' cannot be called with a value" % operator)
 
-            if value is None:
+            if value == None:
                 cmd = command + operator
             else:
                 # validate value
@@ -124,8 +94,7 @@ class NADReceiverTCPC338(asyncio.Protocol):
                     if 'type' in cmd_desc and cmd_desc['type'] == bool:
                         value = cmd_desc['values'][int(value)]
                     elif value not in cmd_desc['values']:
-                        raise ValueError("Given value \'%s\' is not one of %s"
-                                         % (value, cmd_desc['values']))
+                        raise ValueError("Given value \'%s\' is not one of %s" % (value, cmd_desc['values']))
 
                 cmd = command + operator + str(value)
         else:
@@ -172,7 +141,7 @@ class NADReceiverTCPC338(asyncio.Protocol):
             new_state[key] = value
 
             # volume changes implicitly disables mute,
-            if key == 'Main.Volume' and self._state.get('Main.Mute') is True:
+            if key == 'Main.Volume' and self._state.get('Main.Mute') == True:
                 new_state['Main.Mute'] = False
 
         if new_state:
@@ -185,8 +154,7 @@ class NADReceiverTCPC338(asyncio.Protocol):
         if exc:
             _LOGGER.error("Disconnected from %s because of %s", self._host, exc)
         else:
-            _LOGGER.debug("Disconnected from %s because of close/abort.",
-                          self._host)
+            _LOGGER.debug("Disconnected from %s because of close/abort.", self._host)
         self._transport = None
 
         self._state.clear()
@@ -208,9 +176,7 @@ class NADReceiverTCPC338(asyncio.Protocol):
                     connection, timeout=self._connect_timeout)
                 return
             except (ConnectionRefusedError, OSError, asyncio.TimeoutError):
-                _LOGGER.exception("Error connecting to %s, reconnecting in %ss",
-                                  self._host, self._reconnect_interval,
-                                  exc_info=True)
+                _LOGGER.exception("Error connecting to %s, reconnecting in %ss", self._host, self._reconnect_interval, exc_info=True)
                 await asyncio.sleep(self._reconnect_interval, loop=self._loop)
 
     async def disconnect(self):
@@ -221,8 +187,7 @@ class NADReceiverTCPC338(asyncio.Protocol):
     async def exec_command(self, command, operator, value=None):
         if self._transport:
             # throttle commands to CMD_MIN_INTERVAL
-            cmd_wait_time = (self._last_cmd_time
-                             + NADReceiverTCPC338.CMD_MIN_INTERVAL) - time.time()
+            cmd_wait_time = (self._last_cmd_time + NADReceiverTCPC338.CMD_MIN_INTERVAL) - time.time()
             if cmd_wait_time > 0:
                 await asyncio.sleep(cmd_wait_time)
             cmd = self.make_command(command, operator, value)
