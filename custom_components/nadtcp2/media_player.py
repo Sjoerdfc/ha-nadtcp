@@ -6,11 +6,8 @@ import voluptuous as vol
 
 import homeassistant.helpers.config_validation as cv
 from homeassistant.components.media_player import (
-    MediaPlayerEntity, PLATFORM_SCHEMA, DEVICE_CLASS_RECEIVER)
-from homeassistant.components.media_player.const import (
-    SUPPORT_VOLUME_SET,
-    SUPPORT_VOLUME_MUTE, SUPPORT_TURN_ON, SUPPORT_TURN_OFF,
-    SUPPORT_VOLUME_STEP, SUPPORT_SELECT_SOURCE)
+    MediaPlayerEntity, MediaPlayerEntityFeature, PLATFORM_SCHEMA, DEVICE_CLASS_RECEIVER)
+
 from homeassistant.const import (
     CONF_NAME, STATE_OFF, STATE_ON, STATE_UNKNOWN, STATE_UNAVAILABLE,
     EVENT_HOMEASSISTANT_START, EVENT_HOMEASSISTANT_STOP)
@@ -29,12 +26,13 @@ DEFAULT_MAX_VOLUME = 10
 DEFAULT_VOLUME_STEP = 4
 
 SUPPORT_NAD = (
-    SUPPORT_VOLUME_SET 
-    | SUPPORT_VOLUME_MUTE 
-    | SUPPORT_TURN_ON 
-    | SUPPORT_TURN_OFF 
-    | SUPPORT_VOLUME_STEP 
-    | SUPPORT_SELECT_SOURCE
+    MediaPlayerEntityFeature.VOLUME_SET
+    | MediaPlayerEntityFeature.VOLUME_MUTE
+    | MediaPlayerEntityFeature.TURN_ON
+    | MediaPlayerEntityFeature.TURN_OFF
+    | MediaPlayerEntityFeature.VOLUME_STEP
+    | MediaPlayerEntityFeature.SELECT_SOURCE
+
 )
 
 CONF_MIN_VOLUME = 'min_volume'
