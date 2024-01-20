@@ -5,7 +5,7 @@
   "requirements": [
     "nadtcp==0.2.0.dev2"
   ],
-  "version": "0.8",
+  "version": "0.9",
   "dependencies": [],
   "codeowners": ["@mindigmarton", "Sjoerdfc"]
 }
