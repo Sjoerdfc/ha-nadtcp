@@ -207,7 +207,7 @@ class NADEntity(MediaPlayerEntity):
             if CMD_SOURCE in state:
                 self._source = state[CMD_SOURCE]
 
-            self.async_schedule_update_ha_state()
+            self.schedule_update_ha_state()
 
         async def disconnect(event):
             await self._client.disconnect()
