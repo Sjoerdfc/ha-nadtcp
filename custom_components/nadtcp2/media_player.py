@@ -6,7 +6,7 @@ import voluptuous as vol
 
 import homeassistant.helpers.config_validation as cv
 from homeassistant.components.media_player import (
-    MediaPlayerEntity, MediaPlayerEntityFeature, PLATFORM_SCHEMA, DEVICE_CLASS_RECEIVER)
+    MediaPlayerEntity, MediaPlayerEntityFeature, PLATFORM_SCHEMA)
 
 from homeassistant.const import (
     CONF_NAME, STATE_OFF, STATE_ON, STATE_UNKNOWN, STATE_UNAVAILABLE,
@@ -110,11 +110,6 @@ class NADEntity(MediaPlayerEntity):
     def name(self):
         """Return the name of the entity."""
         return self._name
-    
-    @property
-    def device_class(self):
-        """Return the class of this device."""
-        return DEVICE_CLASS_RECEIVER
 
     @property
     def state(self):
